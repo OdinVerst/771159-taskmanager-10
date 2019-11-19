@@ -443,7 +443,7 @@ const COUNT_TASKS = 3;
 
 new Array(COUNT_TASKS).fill(``).forEach(() => {
   render(boardTask, templateTask());
-})
+});
 
 const board = document.querySelector(`.board`);
 
