@@ -4,6 +4,7 @@ import {templateTask} from './components/task';
 import {templateBtnMore} from './components/btn-more';
 import {templateMenu} from './components/menu';
 import {templateCreateTask} from './components/task-add';
+import {generateTask} from './mock/tasks';
 
 
 const render = (container, template) => {
@@ -30,3 +31,7 @@ const COUNT_TASKS = 3;
 const board = document.querySelector(`.board`);
 
 render(board, templateBtnMore());
+
+console.log(generateTask());
+console.log(generateTask());
+console.log(generateTask());
