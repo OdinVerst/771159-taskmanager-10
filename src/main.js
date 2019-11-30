@@ -3,10 +3,10 @@ import {templateBoard} from './components/board';
 import {templateTask} from './components/task';
 import {templateBtnMore} from './components/btn-more';
 import {templateMenu} from './components/menu';
-import {templateCreateTask} from './components/task-add';
+import {templateEditTask} from './components/task-edit';
 
 import {generateTask} from './mock/tasks';
-import { generateFilters } from './mock/filter';
+import {generateFilters} from './mock/filter';
 
 
 const render = (container, template) => {
@@ -24,9 +24,9 @@ render(main, templateBoard());
 
 const boardTask = document.querySelector(`.board__tasks`);
 
-render(boardTask, templateCreateTask());
+render(boardTask, templateEditTask(generateTask()));
 
-const COUNT_TASKS = 3;
+const COUNT_TASKS = 22;
 
 [...new Array(COUNT_TASKS)].forEach(() => {
   render(boardTask, templateTask(generateTask()));
@@ -36,6 +36,3 @@ const board = document.querySelector(`.board`);
 
 render(board, templateBtnMore());
 
-console.log(generateTask());
-console.log(generateTask());
-console.log(generateTask());

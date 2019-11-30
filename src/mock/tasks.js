@@ -1,11 +1,11 @@
 import {getRandomItem, getRandomIntegerNumber} from "../utils";
+import {ColorItems} from "../const";
 
 const DescriptionItems = [
   `Изучить теорию`,
   `Сделать домашку`,
   `Пройти интенсив на соточку`
 ];
-const ColorItems = [`black`, `yellow`, `blue`, `green`, `pink`];
 
 const DefaultRepeatingDays = {
   mo: false,
