@@ -9,10 +9,18 @@ const createFilters = (tasks) => {
   const overdue = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate < today).length;
   const todayFilter = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate.getDay() === today.getDay() &&
   task.dueDate.getMonth() === today.getMonth()).length;
-  return [{name: `all`, count: all}, {name: `overdue`, count: overdue}, {name: `today`, count: todayFilter}];
+  const favorites = tasks.filter((task) => !!task.isFavorite).length;
+  // Переделать
+  const repeating = tasks.filter((task) => !!task.repeatingDays).length;
+  const tags = tasks.filter((task) => task.tags.size).length;
+  const archive = tasks.filter((task) => !!task.isArchive).length;
+  return [{name: `all`, count: all}, {name: `overdue`, count: overdue},
+  {name: `today`, count: todayFilter}, {name: `favorites`, count: favorites},
+  {name: `repating`, count: repeating}, {name: `tags`, count: tags}, {name: `archive`, count: archive}];
 };
 
 const generateFilters = (tasks) => {
+  console.log(tasks);
   const filters = createFilters(tasks);
 
   return filters.map((filterItem) => {
