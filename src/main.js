@@ -5,8 +5,12 @@ import {templateBtnMore} from "./components/btn-more";
 import {templateMenu} from "./components/menu";
 import {templateEditTask} from "./components/task-edit";
 
-import {generateTask} from "./mock/tasks";
+import {generateTask, generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
+
+const COUNT_TASKS = 22;
+const SHOWING_TASKS_COUNT_ON_START = 8;
+const SHOWING_TASKS_COUNT_BY_BUTTON_CLICK = 8;
 
 const render = (container, template) => {
   container.insertAdjacentHTML(`beforeend`, template);
@@ -17,17 +21,13 @@ const main = document.querySelector(`.main`);
 
 render(mainControl, templateMenu());
 
-const filters = generateFilters();
+const filters = generateFilters(generateTasks(COUNT_TASKS));
 render(main, templateFilter(filters), `beforeend`);
 render(main, templateBoard());
 
 const boardTask = document.querySelector(`.board__tasks`);
 
 render(boardTask, templateEditTask(generateTask()));
-
-const COUNT_TASKS = 22;
-const SHOWING_TASKS_COUNT_ON_START = 8;
-const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 let tasksOnBoard = 1;
 
@@ -48,8 +48,8 @@ const loadMoreButton = main.querySelector(`.load-more`);
 loadMoreButton.addEventListener(`click`, () => {
   let balanseTasks = COUNT_TASKS - tasksOnBoard;
   if (balanseTasks) {
-    if (balanseTasks - SHOWING_TASKS_COUNT_BY_BUTTON >= 1) {
-      createTasks(SHOWING_TASKS_COUNT_BY_BUTTON);
+    if (balanseTasks - SHOWING_TASKS_COUNT_BY_BUTTON_CLICK >= 1) {
+      createTasks(SHOWING_TASKS_COUNT_BY_BUTTON_CLICK);
     } else {
       createTasks(balanseTasks);
       loadMoreButton.remove();

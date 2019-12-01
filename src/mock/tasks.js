@@ -1,4 +1,4 @@
-import {getRandomItem, getRandomIntegerNumber} from "../utils";
+import {getRandomArrayElement, getRandomInteger} from "../utils";
 import {ColorItems} from "../const";
 
 const DescriptionItems = [
@@ -29,8 +29,8 @@ const BoolVals = [true, false];
 
 const getRandomDate = () => {
   const targetDate = new Date();
-  const sign = getRandomItem(BoolVals) ? 1 : -1;
-  const diffValue = sign * getRandomIntegerNumber(0, 7);
+  const sign = getRandomArrayElement(BoolVals) ? 1 : -1;
+  const diffValue = sign * getRandomInteger(0, 7);
 
   targetDate.setDate(targetDate.getDate() + diffValue);
 
@@ -41,7 +41,7 @@ const generateRepeatingDays = () => {
   const days = Object.keys(DefaultRepeatingDays);
   const randomRepeet = {};
   days.forEach((day) => {
-    randomRepeet[day] = getRandomItem(BoolVals);
+    randomRepeet[day] = getRandomArrayElement(BoolVals);
   });
   return Object.assign({}, DefaultRepeatingDays, randomRepeet);
 };
@@ -53,15 +53,20 @@ const generateTags = (tags) => {
 };
 
 export const generateTask = () => {
-  const dueDate = getRandomItem(BoolVals) ? null : getRandomDate();
+  const dueDate = getRandomArrayElement(BoolVals) ? null : getRandomDate();
 
   return {
-    description: getRandomItem(DescriptionItems),
+    description: getRandomArrayElement(DescriptionItems),
     dueDate,
     repeatingDays: dueDate ? DefaultRepeatingDays : generateRepeatingDays(),
     tags: new Set(generateTags(Tags)),
-    color: getRandomItem(ColorItems),
-    isFavorite: getRandomItem(BoolVals),
-    isArchive: getRandomItem(BoolVals)
+    color: getRandomArrayElement(ColorItems),
+    isFavorite: getRandomArrayElement(BoolVals),
+    isArchive: getRandomArrayElement(BoolVals)
   };
+};
+
+export const generateTasks = (countTasks) => {
+  return [...new Array(countTasks)]
+    .map(generateTask);
 };

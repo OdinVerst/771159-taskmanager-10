@@ -1,8 +1,8 @@
-export const getRandomItem = (array) => {
+export const getRandomArrayElement = (array) => {
   return array[Math.floor(Math.random() * array.length)];
 };
 
-export const getRandomIntegerNumber = (min, max) => {
+export const getRandomInteger = (min, max) => {
   return min + Math.floor(max * Math.random());
 };
 
