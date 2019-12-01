@@ -1,28 +1,28 @@
-const filterNames = [
-  `all`, `overdue`, `today`, `favorites`, `repeating`, `tags`, `archive`
-];
-
-const createFilters = (tasks) => {
+const createFiltersCount = (tasks) => {
   const today = new Date();
 
-  const all = tasks.length;
-  const overdue = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate < today).length;
-  const todayFilter = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate.getDay() === today.getDay() &&
+  const allCount = tasks.length;
+  const overdueCount = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate < today).length;
+  const todayFilterCount = tasks.filter((task) => task.dueDate instanceof Date && task.dueDate.getDay() === today.getDay() &&
   task.dueDate.getMonth() === today.getMonth()).length;
-  const favorites = tasks.filter((task) => !!task.isFavorite).length;
-  // Переделать
-  const repeating = tasks.filter((task) => !!task.repeatingDays).length;
-  const tags = tasks.filter((task) => task.tags.size).length;
-  const archive = tasks.filter((task) => !!task.isArchive).length;
-  return [{name: `all`, count: all}, {name: `overdue`, count: overdue},
-  {name: `today`, count: todayFilter}, {name: `favorites`, count: favorites},
-  {name: `repating`, count: repeating}, {name: `tags`, count: tags}, {name: `archive`, count: archive}];
+  const favoritesCount = tasks.filter((task) => !!task.isFavorite).length;
+  const repeatingCount = tasks.filter((task) => Object.values(task.repeatingDays).some(Boolean)).length;
+  const tagsCount = tasks.filter((task) => task.tags.size).length;
+  const archiveCount = tasks.filter((task) => !!task.isArchive).length;
+
+  return [
+    {name: `all`, count: allCount},
+    {name: `overdue`, count: overdueCount},
+    {name: `today`, count: todayFilterCount},
+    {name: `favorites`, count: favoritesCount},
+    {name: `repating`, count: repeatingCount},
+    {name: `tags`, count: tagsCount},
+    {name: `archive`, count: archiveCount}
+  ];
 };
 
 const generateFilters = (tasks) => {
-  console.log(tasks);
-  const filters = createFilters(tasks);
-
+  const filters = createFiltersCount(tasks);
   return filters.map((filterItem) => {
     const {name, count} = filterItem;
     return {

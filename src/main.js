@@ -9,7 +9,7 @@ import {generateTask, generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
 
 const COUNT_TASKS = 22;
-const SHOWING_TASKS_COUNT_ON_START = 8;
+const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON_CLICK = 8;
 
 const render = (container, template) => {
@@ -21,7 +21,9 @@ const main = document.querySelector(`.main`);
 
 render(mainControl, templateMenu());
 
-const filters = generateFilters(generateTasks(COUNT_TASKS));
+const ALL_TASKS = generateTasks(COUNT_TASKS);
+
+const filters = generateFilters(ALL_TASKS);
 render(main, templateFilter(filters), `beforeend`);
 render(main, templateBoard());
 
@@ -32,13 +34,16 @@ render(boardTask, templateEditTask(generateTask()));
 let tasksOnBoard = 1;
 
 const createTasks = (count) => {
-  [...new Array(count)].forEach(() => {
-    render(boardTask, templateTask(generateTask()));
+  const itaration = Math.round(tasksOnBoard / SHOWING_TASKS_COUNT_ON_ITERATION);
+  const start = (itaration * SHOWING_TASKS_COUNT_ON_ITERATION);
+  const end = start + count;
+  ALL_TASKS.slice(start, end).forEach((task) => {
+    render(boardTask, templateTask(task));
   });
   tasksOnBoard += count;
 };
 
-createTasks(SHOWING_TASKS_COUNT_ON_START - 1);
+createTasks(SHOWING_TASKS_COUNT_ON_ITERATION - 1);
 
 const board = document.querySelector(`.board`);
 
