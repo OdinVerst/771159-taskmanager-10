@@ -1,5 +1,8 @@
-export const templateMenu = () => {
-  return `<input
+import {createElement} from '../utils';
+
+const createMenuTemplate = () => {
+  return `<section class="control__btn-wrap">
+    <input
       type="radio"
       name="control"
       id="control__new-task"
@@ -27,3 +30,25 @@ export const templateMenu = () => {
     >
     </section>`;
 };
+
+export default class Menu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
