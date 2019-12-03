@@ -1,4 +1,4 @@
-export const templateMenu = () => {
+const createMenuTemplate = () => {
   return `<input
       type="radio"
       name="control"
@@ -27,3 +27,25 @@ export const templateMenu = () => {
     >
     </section>`;
 };
+
+export default class Menu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
