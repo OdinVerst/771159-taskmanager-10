@@ -1,7 +1,8 @@
 import {createElement} from '../utils';
 
 const createMenuTemplate = () => {
-  return `<input
+  return `<section class="control__btn-wrap">
+    <input
       type="radio"
       name="control"
       id="control__new-task"
