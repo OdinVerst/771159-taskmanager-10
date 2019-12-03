@@ -1,5 +1,5 @@
-import {Days, ColorItems, MonthNames} from "../const";
-import {formatTime} from "../utils";
+import {DAYS, COLOR_ITEMS, MONTH_NAMES} from "../const";
+import {formatTime, createElement} from "../utils";
 
 const createColorsMarkup = (colors, checkColor) => {
   return colors
@@ -62,12 +62,12 @@ const createDaysRepeat = (days, repeatingDays) => {
     .join(`\n`);
 };
 
-export const templateEditTask = (task) => {
+const createTaskEditTemplate = (task) => {
   const {description, tags, dueDate, color, repeatingDays} = task;
 
   const hashtagMarkup = createHashtagsMarkup(Array.from(tags));
-  const colorsMarkup = createColorsMarkup(ColorItems, color);
-  const repeatingDaysMarkup = createDaysRepeat(Days, repeatingDays);
+  const colorsMarkup = createColorsMarkup(COLOR_ITEMS, color);
+  const repeatingDaysMarkup = createDaysRepeat(DAYS, repeatingDays);
 
   const isRepeatingTask = Object.values(repeatingDays).some(Boolean);
   const repeatClass = isRepeatingTask
@@ -79,7 +79,7 @@ export const templateEditTask = (task) => {
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
   const date = isDateShowing
-    ? `${dueDate.getDate()} ${MonthNames[dueDate.getMonth()]}`
+    ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}`
     : ``;
   const time = isDateShowing ? formatTime(dueDate) : ``;
 
@@ -164,3 +164,26 @@ export const templateEditTask = (task) => {
     </form>
   </article>`;
 };
+
+export default class TaskEdit {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
