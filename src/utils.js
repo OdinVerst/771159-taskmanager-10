@@ -18,3 +18,7 @@ export const formatTime = (date) => {
 
   return `${hours}:${minutes} ${interval}`;
 };
+
+export const createElement = (element) => {
+  console.log(element);
+};

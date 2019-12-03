@@ -1,3 +1,5 @@
+import {createElement} from '../utils';
+
 const createMenuTemplate = () => {
   return `<input
       type="radio"
