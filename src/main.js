@@ -7,11 +7,13 @@ import BtnMore from "./components/btn-more";
 import {render, RenderPosition} from "./utils";
 import {generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
+import NoTasks from "./components/no-tasks";
 
 const COUNT_TASKS = 22;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 const ALL_TASKS = generateTasks(COUNT_TASKS);
 let tasksOnBoard = 0;
+const isAllTasksArchived = ALL_TASKS.every((task) => task.isArchive);
 
 const mainControlElement = document.querySelector(`.main__control`);
 const mainElement = document.querySelector(`.main`);
@@ -21,6 +23,10 @@ render(mainControlElement, new Menu().getElement(), RenderPosition.BEFOREEND);
 const filters = generateFilters(ALL_TASKS);
 render(mainElement, new Filter(filters).getElement(), RenderPosition.BEFOREEND);
 
+if (!ALL_TASKS.length || isAllTasksArchived) {
+  render(mainElement, new NoTasks().getElement(), RenderPosition.BEFOREEND);
+}
+
 render(mainElement, new Board().getElement(), RenderPosition.BEFOREEND);
 
 const boardTask = document.querySelector(`.board__tasks`);
@@ -29,15 +35,32 @@ const createTask = (task) => {
   const taskComponent = new Task(task);
   const taskEditComponent = new TaskEdit(task);
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToTask();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const replaceEditToTask = () => {
+    boardTask.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+  };
+
+  const replaceTaskToEdit = () => {
+    boardTask.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+  };
+
+
   const editBtn = taskComponent.getElement().querySelector(`.card__btn--edit`);
   editBtn.addEventListener(`click`, () => {
-    boardTask.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    replaceTaskToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   const submitEditTask = taskEditComponent.getElement().querySelector(`.card__form`);
-  submitEditTask.addEventListener(`click`, () => {
-    boardTask.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
-  });
+  submitEditTask.addEventListener(`click`, replaceEditToTask);
 
   render(boardTask, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
