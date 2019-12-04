@@ -60,7 +60,7 @@ const createTask = (task) => {
   });
 
   const submitEditTask = taskEditComponent.getElement().querySelector(`.card__form`);
-  submitEditTask.addEventListener(`click`, replaceEditToTask);
+  submitEditTask.addEventListener(`submit`, replaceEditToTask);
 
   render(boardTask, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
