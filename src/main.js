@@ -1,7 +1,7 @@
 import Menu from "./components/menu";
 import Filter from "./components/filter";
 import Board from "./components/board";
-import BoardFilter from "./components/board-filtter";
+import BoardSort from "./components/board-filtter";
 import NoTasks from "./components/no-tasks";
 import Task from "./components/task";
 import TaskEdit from "./components/task-edit";
@@ -78,7 +78,7 @@ const renderTasks = (count) => {
 if (!ALL_TASKS.length || isAllTasksArchived) {
   render(boardElement, new NoTasks().getElement(), RenderPosition.BEFOREEND);
 } else {
-  render(boardElement, new BoardFilter().getElement(), RenderPosition.BEFOREEND);
+  render(boardElement, new BoardSort().getElement(), RenderPosition.BEFOREEND);
   render(boardElement, new BoardTaskList().getElement(), RenderPosition.BEFOREEND);
   renderTasks(SHOWING_TASKS_COUNT_ON_ITERATION);
 
