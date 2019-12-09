@@ -6,7 +6,7 @@ import NoTasks from "./components/no-tasks";
 import Task from "./components/task";
 import TaskEdit from "./components/task-edit";
 import BtnMore from "./components/btn-more";
-import {render, RenderPosition} from "./utils/render";
+import {render, remove} from "./utils/render";
 import {generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
 import BoardTaskList from "./components/board-tasks-list";
@@ -21,12 +21,12 @@ const isAllTasksArchived = ALL_TASKS.every((task) => task.isArchive);
 const mainControlElement = document.querySelector(`.main__control`);
 const mainElement = document.querySelector(`.main`);
 
-render(mainControlElement, new Menu().getElement(), RenderPosition.BEFOREEND);
+render(mainControlElement, new Menu());
 
 const filters = generateFilters(ALL_TASKS);
-render(mainElement, new Filter(filters).getElement(), RenderPosition.BEFOREEND);
+render(mainElement, new Filter(filters));
 
-render(mainElement, new Board().getElement(), RenderPosition.BEFOREEND);
+render(mainElement, new Board());
 const boardElement = document.querySelector(`.board`);
 
 const createTask = (task) => {
@@ -62,7 +62,7 @@ const createTask = (task) => {
   const submitEditTask = taskEditComponent.getElement().querySelector(`.card__form`);
   submitEditTask.addEventListener(`submit`, replaceEditToTask);
 
-  render(boardTask, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(boardTask, taskComponent);
 };
 
 const renderTasks = (count) => {
@@ -76,16 +76,16 @@ const renderTasks = (count) => {
 };
 
 if (!ALL_TASKS.length || isAllTasksArchived) {
-  render(boardElement, new NoTasks().getElement(), RenderPosition.BEFOREEND);
+  render(boardElement, new NoTasks());
 } else {
-  render(boardElement, new BoardSort().getElement(), RenderPosition.BEFOREEND);
-  render(boardElement, new BoardTaskList().getElement(), RenderPosition.BEFOREEND);
+  render(boardElement, new BoardSort());
+  render(boardElement, new BoardTaskList());
   renderTasks(SHOWING_TASKS_COUNT_ON_ITERATION);
 
   const board = document.querySelector(`.board`);
 
   const btnMore = new BtnMore();
-  render(board, btnMore.getElement(), RenderPosition.BEFOREEND);
+  render(board, btnMore);
 
   btnMore.getElement().addEventListener(`click`, () => {
     let balanseTasks = COUNT_TASKS - tasksOnBoard;
@@ -94,8 +94,7 @@ if (!ALL_TASKS.length || isAllTasksArchived) {
         renderTasks(SHOWING_TASKS_COUNT_ON_ITERATION);
       } else {
         renderTasks(balanseTasks);
-        btnMore.getElement().remove();
-        btnMore.removeElement();
+        remove(btnMore);
       }
     }
   });
