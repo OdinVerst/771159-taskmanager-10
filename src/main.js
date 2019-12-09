@@ -52,15 +52,12 @@ const createTask = (task) => {
     boardTask.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
   };
 
-
-  const editBtn = taskComponent.getElement().querySelector(`.card__btn--edit`);
-  editBtn.addEventListener(`click`, () => {
+  taskComponent.setEditButtonClickHandler(()=> {
     replaceTaskToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const submitEditTask = taskEditComponent.getElement().querySelector(`.card__form`);
-  submitEditTask.addEventListener(`submit`, replaceEditToTask);
+  taskEditComponent.setSubmitHandler(replaceEditToTask);
 
   render(boardTask, taskComponent);
 };
