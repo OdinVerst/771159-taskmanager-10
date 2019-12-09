@@ -6,7 +6,7 @@ import NoTasks from "./components/no-tasks";
 import Task from "./components/task";
 import TaskEdit from "./components/task-edit";
 import BtnMore from "./components/btn-more";
-import {render, RenderPosition} from "./utils";
+import {render, RenderPosition} from "./utils/render";
 import {generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
 import BoardTaskList from "./components/board-tasks-list";
