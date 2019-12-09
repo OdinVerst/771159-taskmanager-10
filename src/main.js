@@ -6,7 +6,7 @@ import NoTasks from "./components/no-tasks";
 import Task from "./components/task";
 import TaskEdit from "./components/task-edit";
 import BtnMore from "./components/btn-more";
-import {render, remove} from "./utils/render";
+import {render, remove, replace} from "./utils/render";
 import {generateTasks} from "./mock/tasks";
 import {generateFilters} from "./mock/filter";
 import BoardTaskList from "./components/board-tasks-list";
@@ -45,11 +45,11 @@ const createTask = (task) => {
   };
 
   const replaceEditToTask = () => {
-    boardTask.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+    replace(taskComponent, taskEditComponent);
   };
 
   const replaceTaskToEdit = () => {
-    boardTask.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    replace(taskEditComponent, taskComponent);
   };
 
   taskComponent.setEditButtonClickHandler(()=> {
@@ -84,7 +84,7 @@ if (!ALL_TASKS.length || isAllTasksArchived) {
   const btnMore = new BtnMore();
   render(board, btnMore);
 
-  btnMore.getElement().addEventListener(`click`, () => {
+  btnMore.setClickHandler(() => {
     let balanseTasks = COUNT_TASKS - tasksOnBoard;
     if (balanseTasks) {
       if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
@@ -95,5 +95,4 @@ if (!ALL_TASKS.length || isAllTasksArchived) {
       }
     }
   });
-
 }
