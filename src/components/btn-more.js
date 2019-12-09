@@ -10,6 +10,6 @@ export default class BtnMore extends AbstractComponent {
   }
 
   setClickHandler(handler) {
-    this.getElement().addEventListener(`submit`, handler);
+    this.getElement().addEventListener(`click`, handler);
   }
 }
