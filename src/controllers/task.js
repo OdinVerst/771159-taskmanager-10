@@ -3,8 +3,9 @@ import TaskEdit from "../components/task-edit";
 import {render, replace} from "../utils/render";
 
 export default class TaskController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
     this._taskComponent = [];
     this._taskEditComponent = [];
 
@@ -21,6 +22,14 @@ export default class TaskController {
     this._taskComponent.setEditButtonClickHandler(() => {
       this._replaceTaskToEdit();
       document.addEventListener(`keydown`, this._onEscKeyDown);
+    });
+
+    this._taskComponent.setFavoritesButtonClickHandler(() => {
+      console.log(1);
+    });
+
+    this._taskComponent.setArchiveButtonClickHandler(() => {
+      console.log(2);
     });
 
     render(this._container, this._taskComponent);
