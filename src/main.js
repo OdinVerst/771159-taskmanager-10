@@ -22,3 +22,5 @@ const boardComponent = new Board();
 render(mainElement, boardComponent);
 const boardController = new BoardController(boardComponent);
 boardController.render(ALL_TASKS);
+
+
