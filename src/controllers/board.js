@@ -8,12 +8,12 @@ import TaskController from "./task";
 let tasksOnBoard = 0;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 
-const renderTasks = (container, tasks, count = tasks.length) => {
+const renderTasks = (container, tasks, onDataChange, count = tasks.length) => {
   const itaration = Math.round(tasksOnBoard / SHOWING_TASKS_COUNT_ON_ITERATION);
   const start = itaration * SHOWING_TASKS_COUNT_ON_ITERATION;
   const end = start + count;
   tasks.slice(start, end).forEach((task) => {
-    const taskControler = new TaskController(container);
+    const taskControler = new TaskController(container, onDataChange);
     taskControler.render(task);
   });
   tasksOnBoard += count;
@@ -43,9 +43,9 @@ export default class BoardController {
         let balanseTasks = tasks.length - tasksOnBoard;
         if (balanseTasks) {
           if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
-            renderTasks(taskListElement, tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
+            renderTasks(taskListElement, tasks, this._onDataChange, SHOWING_TASKS_COUNT_ON_ITERATION);
           } else {
-            renderTasks(taskListElement, tasks, balanseTasks);
+            renderTasks(taskListElement, tasks, this._onDataChange, balanseTasks);
             remove(this._loadMoreButtonComponent);
           }
         }
@@ -61,7 +61,7 @@ export default class BoardController {
 
     const taskListElement = this._boradTasksListComponent.getElement();
 
-    renderTasks(taskListElement, tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
+    renderTasks(taskListElement, tasks, this._onDataChange, SHOWING_TASKS_COUNT_ON_ITERATION);
 
 
     renderLoadMoreButton();
@@ -83,12 +83,17 @@ export default class BoardController {
       tasksOnBoard = 0;
       taskListElement.innerHTML = ``;
 
-      renderTasks(taskListElement, sortedTasks);
+      renderTasks(taskListElement, sortedTasks, this._onDataChange);
       if (sortType === SortType.DEFAULT) {
         renderLoadMoreButton();
       } else {
         remove(this._loadMoreButtonComponent);
       }
     });
+  }
+  _onDataChange(taskController, oldData, newData) {
+    console.log(taskController);
+    console.log(oldData);
+    console.log(newData);
   }
 }

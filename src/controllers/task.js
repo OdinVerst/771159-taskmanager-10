@@ -25,11 +25,13 @@ export default class TaskController {
     });
 
     this._taskComponent.setFavoritesButtonClickHandler(() => {
-      console.log(1);
+      const updTask = Object.assign({}, task, {isFavorite: !task.isFavorite});
+      this._onDataChange(this, task, updTask);
     });
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
-      console.log(2);
+      const updTask = Object.assign({}, task, {isArchive: !task.isArchive});
+      this._onDataChange(this, task, updTask);
     });
 
     render(this._container, this._taskComponent);
