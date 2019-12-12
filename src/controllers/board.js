@@ -42,24 +42,24 @@ export default class BoardController {
     const isAllTasksArchived = this._tasks.every((task) => task.isArchive);
     const container = this._container.getElement();
 
-    const renderLoadMoreButton = () => {
-      if (this._tasks.length <= SHOWING_TASKS_COUNT_ON_ITERATION) {
-        return;
-      }
-      render(container, this._loadMoreButtonComponent);
+    // const renderLoadMoreButton = () => {
+    //   if (this._tasks.length <= SHOWING_TASKS_COUNT_ON_ITERATION) {
+    //     return;
+    //   }
+    //   render(container, this._loadMoreButtonComponent);
 
-      this._loadMoreButtonComponent.setClickHandler(() => {
-        let balanseTasks = this._tasks.length - tasksOnBoard;
-        if (balanseTasks) {
-          if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
-            renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
-          } else {
-            renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, balanseTasks);
-            remove(this._loadMoreButtonComponent);
-          }
-        }
-      });
-    };
+    //   this._loadMoreButtonComponent.setClickHandler(() => {
+    //     let balanseTasks = this._tasks.length - tasksOnBoard;
+    //     if (balanseTasks) {
+    //       if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
+    //         renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
+    //       } else {
+    //         renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, balanseTasks);
+    //         remove(this._loadMoreButtonComponent);
+    //       }
+    //     }
+    //   });
+    // };
 
     if (!this._tasks.length || isAllTasksArchived) {
       render(container, this._noTasksComponent);
@@ -72,7 +72,7 @@ export default class BoardController {
 
     renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
 
-    renderLoadMoreButton();
+    this._renderLoadMoreButton();
 
   }
   _onDataChange(taskController, oldData, newData) {
@@ -90,7 +90,25 @@ export default class BoardController {
     // this._showedTaskControllers.forEach((item) => item.setDefaultView());
   }
   _renderLoadMoreButton() {
+    if (this._tasks.length <= SHOWING_TASKS_COUNT_ON_ITERATION) {
+      return;
+    }
 
+    const container = this._container.getElement();
+    render(container, this._loadMoreButtonComponent);
+    const taskListElement = this._boradTasksListComponent.getElement();
+
+    this._loadMoreButtonComponent.setClickHandler(() => {
+      let balanseTasks = this._tasks.length - tasksOnBoard;
+      if (balanseTasks) {
+        if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
+          renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
+        } else {
+          renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, balanseTasks);
+          remove(this._loadMoreButtonComponent);
+        }
+      }
+    });
   }
 
   _onSortTypeChange(sortType) {
