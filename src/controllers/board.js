@@ -8,12 +8,12 @@ import TaskController from "./task";
 let tasksOnBoard = 0;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 
-const renderTasks = (container, tasks, onDataChange, count = tasks.length) => {
+const renderTasks = (container, tasks, onDataChange, onViewChange, count = tasks.length) => {
   const itaration = Math.round(tasksOnBoard / SHOWING_TASKS_COUNT_ON_ITERATION);
   const start = itaration * SHOWING_TASKS_COUNT_ON_ITERATION;
   const end = start + count;
   tasks.slice(start, end).forEach((task) => {
-    const taskControler = new TaskController(container, onDataChange);
+    const taskControler = new TaskController(container, onDataChange, onViewChange);
     taskControler.render(task);
   });
   tasksOnBoard += count;
@@ -23,7 +23,9 @@ export default class BoardController {
   constructor(container) {
     this._container = container;
     this._tasks = [];
+
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._noTasksComponent = new NoTasks();
     this._sortComponent = new BoardSort();
@@ -46,9 +48,9 @@ export default class BoardController {
         let balanseTasks = this._tasks.length - tasksOnBoard;
         if (balanseTasks) {
           if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
-            renderTasks(taskListElement, this._tasks, this._onDataChange, SHOWING_TASKS_COUNT_ON_ITERATION);
+            renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
           } else {
-            renderTasks(taskListElement, this._tasks, this._onDataChange, balanseTasks);
+            renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, balanseTasks);
             remove(this._loadMoreButtonComponent);
           }
         }
@@ -64,8 +66,7 @@ export default class BoardController {
 
     const taskListElement = this._boradTasksListComponent.getElement();
 
-    renderTasks(taskListElement, this._tasks, this._onDataChange, SHOWING_TASKS_COUNT_ON_ITERATION);
-
+    const newTasks = renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
 
     renderLoadMoreButton();
 
@@ -87,6 +88,7 @@ export default class BoardController {
       taskListElement.innerHTML = ``;
 
       renderTasks(taskListElement, sortedTasks, this._onDataChange);
+
       if (sortType === SortType.DEFAULT) {
         renderLoadMoreButton();
       } else {
@@ -103,5 +105,9 @@ export default class BoardController {
 
     this._tasks[index] = newData;
     taskController.render(this._tasks[index]);
+  }
+
+  _onViewChange() {
+    // this._showedTaskControllers.forEach((item) => item.setDefaultView());
   }
 }
