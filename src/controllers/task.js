@@ -6,13 +6,17 @@ export default class TaskController {
   constructor(container, onDataChange) {
     this._container = container;
     this._onDataChange = onDataChange;
-    this._taskComponent = [];
-    this._taskEditComponent = [];
+
+    this._taskComponent = null;
+    this._taskEditComponent = null;
 
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   render(task) {
+    const oldTaskComponent = this._taskComponent;
+    const oldTaskEditComponent = this._taskEditComponent;
+
     this._taskComponent = new Task(task);
     this._taskEditComponent = new TaskEdit(task);
 
@@ -34,7 +38,12 @@ export default class TaskController {
       this._onDataChange(this, task, updTask);
     });
 
-    render(this._container, this._taskComponent);
+    if (oldTaskEditComponent && oldTaskComponent) {
+      replace(this._taskComponent, oldTaskComponent);
+      replace(this._taskEditComponent, oldTaskEditComponent);
+    } else {
+      render(this._container, this._taskComponent);
+    }
   }
 
   _replaceEditToTask() {
