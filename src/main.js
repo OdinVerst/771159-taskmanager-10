@@ -16,11 +16,12 @@ const mainElement = document.querySelector(`.main`);
 render(mainControlElement, new Menu());
 
 const filters = generateFilters(ALL_TASKS);
-render(mainElement, new Filter(filters));
+const filterComponent = new Filter(filters);
+render(mainElement, filterComponent);
 
 const boardComponent = new Board();
 render(mainElement, boardComponent);
-const boardController = new BoardController(boardComponent);
+const boardController = new BoardController(boardComponent, filterComponent);
 boardController.render(ALL_TASKS);
 
 

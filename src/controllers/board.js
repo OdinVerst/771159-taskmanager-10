@@ -4,26 +4,15 @@ import BoardSort, {SortType} from "../components/board-sort";
 import BtnMore from "../components/btn-more";
 import BoardTaskList from "../components/board-tasks-list";
 import TaskController from "./task";
+import {generateFilters} from "../mock/filter";
 
 let tasksOnBoard = 0;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 
-const renderTasks = (container, tasks, onDataChange, onViewChange, count = tasks.length) => {
-  const itaration = Math.round(tasksOnBoard / SHOWING_TASKS_COUNT_ON_ITERATION);
-  const start = itaration * SHOWING_TASKS_COUNT_ON_ITERATION;
-  const end = start + count;
-  tasksOnBoard += count;
-
-  return tasks.slice(start, end).map((task) => {
-    const taskControler = new TaskController(container, onDataChange, onViewChange);
-    taskControler.render(task);
-    return taskControler;
-  });
-};
-
 export default class BoardController {
-  constructor(container) {
+  constructor(container, filterComponent) {
     this._container = container;
+    this._filterComponent = filterComponent;
     this._tasks = [];
     this._showedTaskControllers = [];
 
@@ -52,14 +41,27 @@ export default class BoardController {
     render(container, this._sortComponent);
     render(container, this._boradTasksListComponent);
 
-    const taskListElement = this._boradTasksListComponent.getElement();
-
-    const newTasks = renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
+    const newTasks = this._renderTasks(this._tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
     this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
 
     this._renderLoadMoreButton();
 
   }
+  _renderTasks(tasks, count = tasks.length) {
+    const taskListElement = this._boradTasksListComponent.getElement();
+
+    const itaration = Math.round(tasksOnBoard / SHOWING_TASKS_COUNT_ON_ITERATION);
+    const start = itaration * SHOWING_TASKS_COUNT_ON_ITERATION;
+    const end = start + count;
+    tasksOnBoard += count;
+
+    return tasks.slice(start, end).map((task) => {
+      const taskControler = new TaskController(taskListElement, this._onDataChange, this._onViewChange);
+      taskControler.render(task);
+      return taskControler;
+    });
+  }
+
   _onDataChange(taskController, oldData, newData) {
     const index = this._tasks.findIndex((item) => item === oldData);
 
@@ -69,6 +71,7 @@ export default class BoardController {
 
     this._tasks[index] = newData;
     taskController.render(this._tasks[index]);
+    this._filterComponent.updData(generateFilters(this._tasks));
   }
 
   _onViewChange() {
@@ -81,16 +84,15 @@ export default class BoardController {
 
     const container = this._container.getElement();
     render(container, this._loadMoreButtonComponent);
-    const taskListElement = this._boradTasksListComponent.getElement();
 
     this._loadMoreButtonComponent.setClickHandler(() => {
       let balanseTasks = this._tasks.length - tasksOnBoard;
       if (balanseTasks) {
         if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
-          const newTasks = renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, SHOWING_TASKS_COUNT_ON_ITERATION);
+          const newTasks = this._renderTasks(this._tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
           this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
         } else {
-          const newTasks = renderTasks(taskListElement, this._tasks, this._onDataChange, this._onViewChange, balanseTasks);
+          const newTasks = this._renderTasks(this._tasks, balanseTasks);
           this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
           remove(this._loadMoreButtonComponent);
         }
@@ -117,7 +119,7 @@ export default class BoardController {
     tasksOnBoard = 0;
     taskListElement.innerHTML = ``;
 
-    const newTasks = renderTasks(taskListElement, sortedTasks, this._onDataChange);
+    const newTasks = this._renderTasks(sortedTasks);
     this._showedTaskControllers = newTasks;
 
     if (sortType === SortType.DEFAULT) {

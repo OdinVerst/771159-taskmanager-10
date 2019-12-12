@@ -66,7 +66,6 @@ export default class TaskController {
   }
 
   _replaceTaskToEdit() {
-    console.log(this);
     this._onViewChange();
 
     replace(this._taskEditComponent, this._taskComponent);
