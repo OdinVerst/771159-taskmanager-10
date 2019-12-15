@@ -238,8 +238,8 @@ export default class TaskEdit extends AbstractSmartComponent {
         altInput: true,
         allowInput: true,
         enableTime: true,
-        altFormat: "F j h:i K",
-        dateFormat: "Y-m-d",
+        altFormat: `F j h:i K`,
+        dateFormat: `Y-m-d`,
         defaultDate: this._task.dueDate,
       });
     }
