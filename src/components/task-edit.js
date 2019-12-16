@@ -1,5 +1,8 @@
-import {DAYS, COLOR_ITEMS, MONTH_NAMES} from "../const";
-import {formatTime} from "../utils/common";
+import flatpickr from "flatpickr";
+import 'flatpickr/dist/themes/light.css';
+
+import {DAYS, COLOR_ITEMS} from "../const";
+import {formatTime, formatDate} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
 const createColorsMarkup = (colors, checkColor) => {
@@ -78,9 +81,7 @@ const createTaskEditTemplate = (task, options = {}) => {
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
-  const date = isDateShowing && dueDate
-    ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}`
-    : ``;
+  const date = isDateShowing && dueDate ? formatDate(dueDate) : ``;
   const time = isDateShowing && dueDate ? formatTime(dueDate) : ``;
 
   return `<article class="card card--edit card--${color} ${repeatClass} ${deadlineClass}">
@@ -172,7 +173,9 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._isDateShowing = !!task.dueDate;
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+    this._flatpickr = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -192,6 +195,22 @@ export default class TaskEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this._subscribeOnEvents();
+  }
+
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
+  reset() {
+    const task = this._task;
+
+    this._isDateShowing = !!task.dueDate;
+    this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
+    this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+
+    this.rerender();
   }
 
   _subscribeOnEvents() {
@@ -214,6 +233,25 @@ export default class TaskEdit extends AbstractSmartComponent {
       repeatDays.addEventListener(`change`, (evt) => {
         this._activeRepeatingDays[evt.target.value] = evt.target.checked;
         this.rerender();
+      });
+    }
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    if (this._isDateShowing) {
+      const dateElement = this.getElement().querySelector(`.card__date`);
+      this._flatpickr = flatpickr(dateElement, {
+        altInput: true,
+        allowInput: true,
+        enableTime: true,
+        altFormat: `F j h:i K`,
+        dateFormat: `Y-m-d`,
+        defaultDate: this._task.dueDate,
       });
     }
   }
