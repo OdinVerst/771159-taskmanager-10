@@ -16,7 +16,7 @@ export const getFavoriteTasks = (tasks) => {
 export const getOverdueTasks = (tasks, date) => {
   return tasks.filter((task) => {
     if (task.dueDate) {
-      isOverdueDate(task.dueDate, date);
+      return isOverdueDate(task.dueDate, date);
     }
     return false;
   });
@@ -27,11 +27,11 @@ export const getRepeatingTasks = (tasks) => {
 };
 
 export const getTasksWithHashtags = (tasks) => {
-  return tasks.filter((task) => task.repeatingDays && task.repeatingDays.size);
+  return tasks.filter((task) => task.tags && task.tags.size);
 };
 
 export const getTasksInOneDay = (tasks, date) => {
-  return tasks.filter((task) => isOneDay(task, date));
+  return tasks.filter((task) => isOneDay(task.dueDate, date));
 };
 
 export const getTasksByFilter = (tasks, filterType) => {

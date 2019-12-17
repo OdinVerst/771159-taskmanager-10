@@ -1,5 +1,11 @@
 import AbstractSmartComponent from './abstract-smart-component';
 
+const FILTER_ID_PREFIX = `filter__`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
 const createFilterMarkup = (filter, isChecked) => {
   const {name, count} = filter;
 
@@ -41,8 +47,10 @@ export default class Filter extends AbstractSmartComponent {
     return false;
   }
 
-  updData(filters) {
-    this._filters = filters;
-    this.rerender();
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+    });
   }
 }

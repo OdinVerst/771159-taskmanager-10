@@ -21,7 +21,7 @@ export const isRepeating = (repeatingDays) => {
 };
 
 export const isOverdueDate = (dueDate, date) => {
-  return dueDate < date && !isOneDay(date, dueDate);
+  return new Date(dueDate) < new Date(date) && !isOneDay(date, dueDate);
 };
 
 export const isOneDay = (dateA, dateB) => {

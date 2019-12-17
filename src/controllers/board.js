@@ -4,15 +4,13 @@ import BoardSort, {SortType} from "../components/board-sort";
 import BtnMore from "../components/btn-more";
 import BoardTaskList from "../components/board-tasks-list";
 import TaskController from "./task";
-import {generateFilters} from "../mock/filter";
 
 let tasksOnBoard = 0;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 
 export default class BoardController {
-  constructor(container, tasksModel, filterComponent) {
+  constructor(container, tasksModel) {
     this._container = container;
-    this._filterComponent = filterComponent;
     this._tasksModel = tasksModel;
     this._showedTaskControllers = [];
 
@@ -65,7 +63,6 @@ export default class BoardController {
     const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
     if (isSuccess) {
       taskController.render(newData);
-      this._filterComponent.updData(generateFilters(this._tasksModel.getTasks()));
     }
   }
 
