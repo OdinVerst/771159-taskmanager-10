@@ -10,10 +10,10 @@ let tasksOnBoard = 0;
 const SHOWING_TASKS_COUNT_ON_ITERATION = 8;
 
 export default class BoardController {
-  constructor(container, filterComponent) {
+  constructor(container, tasksModel, filterComponent) {
     this._container = container;
     this._filterComponent = filterComponent;
-    this._tasks = [];
+    this._tasksModel = tasksModel;
     this._showedTaskControllers = [];
 
     this._onDataChange = this._onDataChange.bind(this);
@@ -28,20 +28,19 @@ export default class BoardController {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-  render(tasks) {
-    this._tasks = tasks;
-    const isAllTasksArchived = this._tasks.every((task) => task.isArchive);
+  render() {
+    const tasks = this._tasksModel.getTasks();
+    const isAllTasksArchived = tasks.every((task) => task.isArchive);
     const container = this._container.getElement();
 
-
-    if (!this._tasks.length || isAllTasksArchived) {
+    if (!tasks.length || isAllTasksArchived) {
       render(container, this._noTasksComponent);
       return;
     }
     render(container, this._sortComponent);
     render(container, this._boradTasksListComponent);
 
-    const newTasks = this._renderTasks(this._tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
+    const newTasks = this._renderTasks(tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
     this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
 
     this._renderLoadMoreButton();
@@ -63,22 +62,19 @@ export default class BoardController {
   }
 
   _onDataChange(taskController, oldData, newData) {
-    const index = this._tasks.findIndex((item) => item === oldData);
-
-    if (index === -1) {
-      return;
+    const isSuccess = this._tasksModel.updateTask(oldData.id, newData);
+    if (isSuccess) {
+      taskController.render(newData);
+      this._filterComponent.updData(generateFilters(this._tasksModel.getTasks()));
     }
-
-    this._tasks[index] = newData;
-    taskController.render(this._tasks[index]);
-    this._filterComponent.updData(generateFilters(this._tasks));
   }
 
   _onViewChange() {
     this._showedTaskControllers.forEach((item) => item.setDefaultView());
   }
   _renderLoadMoreButton() {
-    if (this._tasks.length <= SHOWING_TASKS_COUNT_ON_ITERATION) {
+    const tasks = this._tasksModel.getTasks();
+    if (tasks.length <= SHOWING_TASKS_COUNT_ON_ITERATION) {
       return;
     }
 
@@ -86,13 +82,13 @@ export default class BoardController {
     render(container, this._loadMoreButtonComponent);
 
     this._loadMoreButtonComponent.setClickHandler(() => {
-      let balanseTasks = this._tasks.length - tasksOnBoard;
+      let balanseTasks = tasks.length - tasksOnBoard;
       if (balanseTasks) {
         if (balanseTasks - SHOWING_TASKS_COUNT_ON_ITERATION >= 1) {
-          const newTasks = this._renderTasks(this._tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
+          const newTasks = this._renderTasks(tasks, SHOWING_TASKS_COUNT_ON_ITERATION);
           this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
         } else {
-          const newTasks = this._renderTasks(this._tasks, balanseTasks);
+          const newTasks = this._renderTasks(tasks, balanseTasks);
           this._showedTaskControllers = this._showedTaskControllers.concat(newTasks);
           remove(this._loadMoreButtonComponent);
         }
@@ -102,16 +98,17 @@ export default class BoardController {
 
   _onSortTypeChange(sortType) {
     let sortedTasks = [];
+    const tasks = this._tasksModel.getTasks();
 
     switch (sortType) {
       case SortType.DATE_UP:
-        sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        sortedTasks = tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
         break;
       case SortType.DATE_DOWN:
-        sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        sortedTasks = tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
         break;
       case SortType.DEFAULT:
-        sortedTasks = this._tasks.slice(0, SHOWING_TASKS_COUNT_ON_ITERATION);
+        sortedTasks = tasks.slice(0, SHOWING_TASKS_COUNT_ON_ITERATION);
         break;
     }
 
