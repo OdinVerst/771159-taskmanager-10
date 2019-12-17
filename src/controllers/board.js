@@ -17,6 +17,7 @@ export default class BoardController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._noTasksComponent = new NoTasks();
     this._sortComponent = new BoardSort();
@@ -24,6 +25,7 @@ export default class BoardController {
     this._loadMoreButtonComponent = new BtnMore();
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._tasksModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
@@ -121,5 +123,18 @@ export default class BoardController {
     } else {
       remove(this._loadMoreButtonComponent);
     }
+  }
+
+  _onFilterChange() {
+    this._removeTasks();
+    this._renderTasks(this._tasksModel.getTasks(), SHOWING_TASKS_COUNT_ON_ITERATION);
+    this._renderLoadMoreButton();
+  }
+
+  _removeTasks() {
+    const taskListElement = this._boradTasksListComponent.getElement();
+
+    taskListElement.innerHTML = ``;
+    this._showedTaskControllers = [];
   }
 }
