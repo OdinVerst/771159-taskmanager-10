@@ -28,7 +28,10 @@ export default class TaskController {
     this._taskComponent = new Task(task);
     this._taskEditComponent = new TaskEdit(task);
 
-    this._taskEditComponent.setSubmitHandler(() => {
+    this._taskEditComponent.setSubmitHandler((evt) => {
+      evt.preventDefault();
+      const data = this._taskEditComponent.getData();
+      this._onDataChange(this, task, data);
       this._replaceEditToTask();
     });
     this._taskComponent.setEditButtonClickHandler(() => {

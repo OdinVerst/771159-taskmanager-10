@@ -5,6 +5,25 @@ import {DAYS, COLOR_ITEMS} from "../const";
 import {formatTime, formatDate} from "../utils/common";
 import AbstractSmartComponent from "./abstract-smart-component";
 
+const parseFormData = (formData) => {
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+  const date = formData.get(`date`);
+
+  return {
+    description: formData.get(`text`),
+    color: formData.get(`color`),
+    tags: formData.getAll(`hashtag`),
+    dueDate: date ? new Date(date) : null,
+    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+  };
+};
+
 const createColorsMarkup = (colors, checkColor) => {
   return colors
     .map((color) => {
@@ -174,6 +193,7 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._flatpickr = null;
+    this._submitHandler = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
@@ -191,9 +211,12 @@ export default class TaskEdit extends AbstractSmartComponent {
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`)
       .addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
     this._subscribeOnEvents();
   }
 
@@ -211,6 +234,13 @@ export default class TaskEdit extends AbstractSmartComponent {
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
 
     this.rerender();
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.card__form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
   }
 
   _subscribeOnEvents() {

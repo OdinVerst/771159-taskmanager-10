@@ -6,6 +6,7 @@ export default class Tasks {
     this._tasks = [];
     this._activeTypeFilter = FilterType.ALL;
 
+    this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
@@ -27,17 +28,22 @@ export default class Tasks {
   }
 
   updateTask(id, task) {
-    const index = this._tasks.map((item) => item.id === id);
-
+    const index = this._tasks.findIndex((item) => item.id === id);
     if (index === -1) {
       return false;
     }
 
     this._tasks = [].concat(this._tasks.slice(0, index), task, this._tasks.slice(index + 1));
+
+    this._dataChangeHandlers.forEach((handler) => handler());
     return true;
   }
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 }
